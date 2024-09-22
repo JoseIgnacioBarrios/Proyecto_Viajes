@@ -1,15 +1,12 @@
 package init.entities;
 
 
-
-import org.springframework.data.annotation.Id;
-
-import init.model.HotelDto;
-import init.model.VueloDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -26,29 +23,28 @@ public class Reserva {
 	private String usuario;
 	
 	
-	@OneToMany()
-	@JoinColumn(name="hotel",
-		referencedColumnName="idHotel")
-	private HotelDto hotel;
+	@ManyToOne()
+	@JoinColumn(name="hotel", referencedColumnName = "idHotel")
+	private Hotel hotel;
 	
-	@OneToMany()
-	@JoinColumn(name="vuelo",
-		referencedColumnName="idvuelo")
-	private VueloDto vuelo;
+	@ManyToOne()
+	@JoinColumn(name="vuelo", referencedColumnName = "idvuelo")
+	private Vuelo vuelo;
 	
 	//	@OneToMany()
 	//	@JoinColumn(name="usuario",
 	//		referencedColumnName="usuario")
 	//	private List<ClienteDto> usuarios;
 
-	public Reserva(int idreserva, double precio, String usuario, HotelDto hoteles, VueloDto vuelos) {
+	public Reserva(int idreserva, double precio, String usuario, Hotel hotel, Vuelo vuelo) {
 		super();
 		this.idreserva = idreserva;
 		this.precio = precio;
 		this.usuario = usuario;
-		this.hotel = hoteles;
-		this.vuelo = vuelos;
+		this.hotel = hotel;
+		this.vuelo = vuelo;
 	}
+
 
 	public Reserva() {
 		super();
@@ -78,19 +74,19 @@ public class Reserva {
 		this.usuario = usuario;
 	}
 
-	public HotelDto getHotel() {
+	public Hotel getHotel() {
 		return hotel;
 	}
 
-	public void setHotel(HotelDto hoteles) {
+	public void setHotel(Hotel hoteles) {
 		this.hotel = hoteles;
 	}
 
-	public VueloDto getVuelo() {
+	public Vuelo getVuelo() {
 		return vuelo;
 	}
 
-	public void setVuelo(VueloDto vuelos) {
+	public void setVuelo(Vuelo vuelos) {
 		this.vuelo = vuelos;
 	}
 

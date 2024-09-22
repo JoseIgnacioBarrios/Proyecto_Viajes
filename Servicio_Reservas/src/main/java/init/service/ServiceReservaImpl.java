@@ -2,21 +2,56 @@ package init.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
 import init.dao.DaoReserva;
+import init.entities.Hotel;
 import init.entities.Reserva;
+import init.entities.Vuelo;
 import init.model.ReservaDto;
 import init.utilidades.Mapeador;
 
+@Service
 public class ServiceReservaImpl implements ServiceReserva {
 
 	
 	Mapeador mapeador;
 	DaoReserva daoReserva;
+	RestClient restClient;
+	
+	@Value("${servicio.hotel}")
+	String urlServicioHotel;
+	
+	@Value("${servicio.vuelo}")
+	String urlServicioVuelo;
+	
+	public ServiceReservaImpl(Mapeador mapeador,DaoReserva daoReserva, RestClient restClient) {
+		this.daoReserva=daoReserva;
+		this.mapeador=mapeador;
+		this.restClient=restClient;
+	}
+	
 	
 	@Override
 	public void save(ReservaDto reservaDto) {
 		// TODO Auto-generated method stub
-		daoReserva.save(mapeador.reservaDtoToEntity(reservaDto));
+		Reserva reserva=mapeador.reservaDtoToEntity(reservaDto);
+//		//usamos servicio Hotel
+		Hotel hotel= restClient
+						.get()
+						.uri(urlServicioHotel+"buscarPorId/"+reservaDto.getHotel().getIdHotel())
+						.retrieve()
+						.body(Hotel.class);
+		reserva.setHotel(hotel);
+		Vuelo vuelo=restClient
+						.get()
+						.uri(urlServicioVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
+						.retrieve()
+						.body(Vuelo.class);
+		reserva.setVuelo(vuelo);
+		daoReserva.save(reserva);
 	}
 
 	@Override
@@ -27,5 +62,7 @@ public class ServiceReservaImpl implements ServiceReserva {
 					.map(r->mapeador.reservaEntityToDto(r))
 					.toList();
 	}
+	
+	
 
 }

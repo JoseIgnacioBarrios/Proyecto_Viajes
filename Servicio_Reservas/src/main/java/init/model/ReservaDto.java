@@ -1,13 +1,14 @@
 package init.model;
 
 public class ReservaDto {
-	
+	private int idreserva;
 	private double precio;
 	private String usuario;
 	private HotelDto hotel;
 	private VueloDto vuelo;
-	public ReservaDto(double precio, String usuario, HotelDto hotel, VueloDto vuelo) {
+	public ReservaDto(int idreserva, double precio, String usuario, HotelDto hotel, VueloDto vuelo) {
 		super();
+		this.idreserva=idreserva;
 		this.precio = precio;
 		this.usuario = usuario;
 		this.hotel = hotel;
@@ -39,6 +40,12 @@ public class ReservaDto {
 	}
 	public void setVuelo(VueloDto vuelos) {
 		this.vuelo = vuelos;
+	}
+	public int getIdreserva() {
+		return idreserva;
+	}
+	public void setIdreserva(int idreserva) {
+		this.idreserva = idreserva;
 	}
 
 }

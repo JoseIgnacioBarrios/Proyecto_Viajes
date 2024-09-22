@@ -1,13 +1,17 @@
 package init.controller;
 
+import java.util.List;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import init.model.ReservaDto;
 import init.service.ServiceReserva;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -22,12 +26,18 @@ public class ControllerReserva {
 
 
 	@PostMapping(value="altaReseva", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String altaReseva(@RequestBody ReservaDto reserva) {
+	public String altaReseva(@RequestBody ReservaDto reservaDto) {
 		//TODO: process POST request
 		
-		serviceReserva.save(reserva);
+		serviceReserva.save(reservaDto);
 		return "ok";
 	}
+	
+	@GetMapping(value="buscarPorCliente/{cliente}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<ReservaDto> buscarPorCliente(@PathVariable("cliente") String cliente) {
+		return serviceReserva.finByCliente(cliente);
+	}
+	
 	
 
 }
