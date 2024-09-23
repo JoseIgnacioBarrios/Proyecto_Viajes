@@ -8,11 +8,14 @@ import init.service.ServiceCliente;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+@CrossOrigin
 @RestController
 public class ControllerCliente {
 	
@@ -30,15 +33,15 @@ public class ControllerCliente {
 	}
 	
 	@GetMapping(value="ValidarUserPass/{usuario}/{contrasena}",produces = MediaType.TEXT_PLAIN_VALUE)
-	public String ValidarUserPass(@PathVariable("usuario") String usuario, @PathVariable("contrsena")String contrasena) {
-		return serviceCliente.findByUserPass(usuario, contrasena);
+	public @ResponseBody String ValidarUserPass(@PathVariable("usuario") String usuario, @PathVariable("contrasena")String contrasena) {
+		return String.valueOf( serviceCliente.findByUserPass(usuario, contrasena));
 	}
 
 	
-	@PostMapping(value="save",consumes = MediaType.APPLICATION_JSON_VALUE)
-	public String save(@RequestBody ClienteDto cliente) {
-			serviceCliente.save(cliente);
-		return "ok";	
+	@PostMapping(value="save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public @ResponseBody String save(@RequestBody ClienteDto cliente) {
+			
+		return String.valueOf(serviceCliente.save(cliente));	
 	}
 	
 	

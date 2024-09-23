@@ -27,16 +27,23 @@ public class ServiceClienteImpl implements ServiceCliente {
 	}
 
 	@Override
-	public String findByUserPass(String usuario, String password) {
+	public boolean findByUserPass(String usuario, String password) {
 		Optional<Cliente> opCliente=daoCliente.findByUserPass(usuario, password);
 		
-		return opCliente.isPresent()?"true":"false";
+		return opCliente.isPresent()?true:false;
 	}
 
 	@Override
-	public void save(ClienteDto cliente) {
+	public boolean save(ClienteDto cliente) {
+		try{
+			Cliente opcliente= daoCliente.save( mapeador.clienteDtoToEntity(cliente));
+			return true;
+		}catch (Exception e) {
+			// mejorar la excepcion la que corresponda
+			//throw new IllegalArgumentException();
+			return false;
+		}
 		
-		daoCliente.save( mapeador.clienteDtoToEntity(cliente));
 
 	}
 

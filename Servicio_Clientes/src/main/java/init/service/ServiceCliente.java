@@ -12,8 +12,8 @@ public interface ServiceCliente {
 	
 	ClienteDto findByUsuario(String usuario);
 	
-	String findByUserPass(String usuario, String password);
+	boolean findByUserPass(String usuario, String password);
 	
-	void save(ClienteDto cliente);
+	boolean save(ClienteDto cliente);
 
 }
