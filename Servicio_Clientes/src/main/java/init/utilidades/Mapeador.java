@@ -9,6 +9,18 @@ import init.model.ClienteDto;
 public class Mapeador {
 
 	public ClienteDto clienteEntityToDto(Cliente cliente) {
-		return new ClienteDto();
+		return new ClienteDto(cliente.getUsuario(),
+								cliente.getPassword(),
+								cliente.getDireccion(),
+								cliente.getTarjeta(),
+								cliente.getDni());
 	}
+	public Cliente clienteDtoToEntity(ClienteDto cliente) {
+		return new Cliente(cliente.getUsuario(),
+								cliente.getPassword(),
+								cliente.getDireccion(),
+								cliente.getTarjeta(),
+								cliente.getDni());
+	}
+	
 }

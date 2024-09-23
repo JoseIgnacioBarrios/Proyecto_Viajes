@@ -1,0 +1,17 @@
+login():void{
+    this.loginService.login(this.usuario,this.password).subscribe(data=>{
+      this.cliente=data;
+      if(this.cliente){
+        //para guardar los datos del cliente anutenticado
+        //en el componente de menú
+        this.menuComponent.cliente=data;
+        this.menuComponent.enabledActions=true;
+        this.menuComponent.enabledEnter=false;
+        //para caragar la página de reservar una vez el cliente
+        //se ha autenticado
+        this.router.navigate(["/reservar"]);
+      }else{
+        alert("usuario no autenticado");
+      }
+    });
+  } 
