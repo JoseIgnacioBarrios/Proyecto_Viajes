@@ -36,6 +36,12 @@ public class ServiceHotelImpl implements ServiceHotel {
 		return mapeador.hotelEntityToDto(opHotel.isPresent()?opHotel.get():new Hotel());
 	}
 
+	@Override
+	public List<String> destinos() {
+		// TODO Auto-generated method stub
+		return daoHotel.destinos();
+	}
+
 	
 
 }

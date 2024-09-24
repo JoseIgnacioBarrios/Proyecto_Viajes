@@ -3,6 +3,7 @@ package init.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import init.model.HotelDto;
 import init.service.ServiceHotel;
 
+@CrossOrigin
 @RestController
 public class ControllerHotel {
 
@@ -27,4 +29,11 @@ public class ControllerHotel {
 	public List<HotelDto> buscaPorLocalizacion(@PathVariable("localizacion")String localizacion){
 		return serviceHotel.findByLocalizacion(localizacion);
 	}
+	
+	@GetMapping(value="destinos", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<String> destinos(){
+		return serviceHotel.destinos();
+	}
+	
+	
 }

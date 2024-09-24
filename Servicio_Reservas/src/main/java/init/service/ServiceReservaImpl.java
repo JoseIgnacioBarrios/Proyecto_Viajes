@@ -35,37 +35,44 @@ public class ServiceReservaImpl implements ServiceReserva {
 	
 	
 	@Override
-	public void save(ReservaDto reservaDto) {
+	public boolean save(ReservaDto reservaDto) {
 		// TODO Auto-generated method stub
+		try {
+			Reserva reserva=mapeador.reservaDtoToEntity(reservaDto);
+			
+	//actualizo el numero de plazas de vuelo
+			restClient
+				.put()
+				.uri(urlServicioVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
+				.retrieve();
+			
+	
+			
+	//usamos servicio Hotel
+			Hotel hotel= restClient
+							.get()
+							.uri(urlServicioHotel+"buscarPorId/"+reservaDto.getHotel().getIdHotel())
+							.retrieve()
+							.body(Hotel.class);
+			reserva.setHotel(hotel);
+			Vuelo vuelo=restClient
+							.get()
+							.uri(urlServicioVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
+							.retrieve()
+							.body(Vuelo.class);
+			
+			//calcula el precio de la resrva
+			reserva.setPrecio(reservaDto.getVuelo().getPlazas()*reservaDto.getVuelo().getPrecio());
+			
+			reserva.setVuelo(vuelo);
+			
+	//crea la reserva
+			daoReserva.save(reserva);
+			return true;
+		}catch (Exception e) {
+			return false;
+		}
 		
-		Reserva reserva=mapeador.reservaDtoToEntity(reservaDto);
-		
-//actualizo el numero de plazas de vuelo
-		restClient
-			.put()
-			.uri(urlServicioVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
-			.retrieve();
-		
-//calcula el precio de la resrva
-		reserva.setPrecio(reservaDto.getVuelo().getPlazas()*reservaDto.getVuelo().getPrecio());
-		
-//usamos servicio Hotel
-		Hotel hotel= restClient
-						.get()
-						.uri(urlServicioHotel+"buscarPorId/"+reservaDto.getHotel().getIdHotel())
-						.retrieve()
-						.body(Hotel.class);
-		reserva.setHotel(hotel);
-		Vuelo vuelo=restClient
-						.get()
-						.uri(urlServicioVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
-						.retrieve()
-						.body(Vuelo.class);
-		
-		reserva.setVuelo(vuelo);
-		
-//crea la reserva
-		daoReserva.save(reserva);
 	}
 
 	@Override

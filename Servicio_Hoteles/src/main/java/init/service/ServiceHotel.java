@@ -8,4 +8,7 @@ public interface ServiceHotel {
 	List<HotelDto> findByLocalizacion(String localizacion);
 	
 	HotelDto findById(int idHotel);
+	
+	List<String> destinos();
+	
 }

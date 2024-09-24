@@ -3,6 +3,7 @@ package init.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,7 +13,7 @@ import init.model.VueloDto;
 import init.service.ServiceVuelo;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@CrossOrigin
 @RestController
 public class ControllerVuelo {
 

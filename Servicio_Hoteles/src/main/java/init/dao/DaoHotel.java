@@ -11,4 +11,7 @@ public interface DaoHotel extends JpaRepository<Hotel, Integer> {
 
 	@Query("select h from Hotel h where h.localizacion=?1")
 	List<Hotel> finByLocalizacion(String localizacion);
+	
+	@Query("SELECT DISTINCT h.localizacion FROM Hotel h")
+	List<String> destinos();
 }

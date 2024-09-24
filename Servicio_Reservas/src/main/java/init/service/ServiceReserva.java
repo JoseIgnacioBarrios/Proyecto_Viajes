@@ -12,6 +12,6 @@ public interface ServiceReserva {
 
 	public List<ReservaDto> finByCliente(String usuario);
 
-	void save(ReservaDto reservaDto);
+	boolean save(ReservaDto reservaDto);
 	
 }
