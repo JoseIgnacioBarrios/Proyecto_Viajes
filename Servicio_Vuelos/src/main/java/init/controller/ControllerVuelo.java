@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import init.model.VueloDto;
 import init.service.ServiceVuelo;
-import org.springframework.web.bind.annotation.RequestParam;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 public class ControllerVuelo {
 

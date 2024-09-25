@@ -4,14 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import init.dao.DaoReserva;
 import init.entities.Hotel;
 import init.entities.Reserva;
 import init.entities.Vuelo;
+import init.model.ClienteDto;
 import init.model.ReservaDto;
 import init.utilidades.Mapeador;
+
+import java.util.Base64;
 
 @Service
 public class ServiceReservaImpl implements ServiceReserva {
@@ -27,6 +31,9 @@ public class ServiceReservaImpl implements ServiceReserva {
 	@Value("${servicio.vuelo}")
 	String urlServicioVuelo;
 	
+	@Value("${servicio.cliente}")
+	String urlServicioCliente;
+	
 	public ServiceReservaImpl(Mapeador mapeador,DaoReserva daoReserva, RestClient restClient) {
 		this.daoReserva=daoReserva;
 		this.mapeador=mapeador;
@@ -37,14 +44,30 @@ public class ServiceReservaImpl implements ServiceReserva {
 	@Override
 	public boolean save(ReservaDto reservaDto) {
 		// TODO Auto-generated method stub
-		try {
+		System.out.println("ENTRO EN SAVE DE RESERVA");
 			Reserva reserva=mapeador.reservaDtoToEntity(reservaDto);
 			
+			String usuario=reservaDto.getUsuario();
+			ClienteDto userAutentificado= restClient
+											.get()
+											.uri(urlServicioCliente+"buscarPorUsuario/"+usuario)
+											.retrieve()
+											.body(ClienteDto.class);
+											
+			
+			
 	//actualizo el numero de plazas de vuelo
-			restClient
-				.put()
-				.uri(urlServicioVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
-				.retrieve();
+			System.out.println("userAutentificado : "+userAutentificado.getUsuario() + userAutentificado.getPassword());
+			try {	
+				restClient
+					.put()
+					.uri(urlServicioVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
+					.header("Authorization", "Basic "+getBase64(userAutentificado.getUsuario(),userAutentificado.getPassword()))
+					.retrieve();
+			}catch (HttpClientErrorException e) {
+				System.out.println("cath de update Plazas");
+				throw new RuntimeException();
+			}
 			
 	
 			
@@ -55,6 +78,7 @@ public class ServiceReservaImpl implements ServiceReserva {
 							.retrieve()
 							.body(Hotel.class);
 			reserva.setHotel(hotel);
+			
 			Vuelo vuelo=restClient
 							.get()
 							.uri(urlServicioVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
@@ -62,16 +86,18 @@ public class ServiceReservaImpl implements ServiceReserva {
 							.body(Vuelo.class);
 			
 			//calcula el precio de la resrva
-			reserva.setPrecio(reservaDto.getVuelo().getPlazas()*reservaDto.getVuelo().getPrecio());
+			reserva.setPrecio(reservaDto.getVuelo().getPlazas()*vuelo.getPrecio());
 			
 			reserva.setVuelo(vuelo);
 			
 	//crea la reserva
-			daoReserva.save(reserva);
-			return true;
-		}catch (Exception e) {
-			return false;
-		}
+			try {
+				daoReserva.save(reserva);
+				return true;
+			}catch (HttpClientErrorException e) {
+				System.out.println("cath save reserva");
+				throw new RuntimeException();
+			}
 		
 	}
 
@@ -83,6 +109,13 @@ public class ServiceReservaImpl implements ServiceReserva {
 					.map(r->mapeador.reservaEntityToDto(r))
 					.toList();
 	}
+	
+	private String getBase64(String us ,String pwd) {
+		String cad=us+":"+pwd;
+		return Base64.getEncoder().encodeToString(cad.getBytes());
+		
+	}
+
 	
 	
 

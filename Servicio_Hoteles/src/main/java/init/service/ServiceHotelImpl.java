@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import init.dao.DaoHotel;
 import init.entities.Hotel;
@@ -24,22 +25,36 @@ public class ServiceHotelImpl implements ServiceHotel {
 
 	@Override
 	public List<HotelDto> findByLocalizacion(String localizacion) {
-		return daoHotel.finByLocalizacion(localizacion)
+		try {
+			return daoHotel.finByLocalizacion(localizacion)
 					.stream()
 					.map(h->mapeador.hotelEntityToDto(h))
 					.toList();
+		}catch (HttpClientErrorException e) {
+			throw new RuntimeException();
+		}
+		
 	}
 
 	@Override
 	public HotelDto findById(int idHotel) {
+		try {
 		Optional<Hotel>opHotel= daoHotel.findById(idHotel);
 		return mapeador.hotelEntityToDto(opHotel.isPresent()?opHotel.get():new Hotel());
+		}catch (HttpClientErrorException e) {
+			throw new RuntimeException();
+		}
+		
 	}
 
 	@Override
 	public List<String> destinos() {
-		// TODO Auto-generated method stub
-		return daoHotel.destinos();
+		try {
+			return daoHotel.destinos();
+		}catch (HttpClientErrorException e) {
+			throw new RuntimeException();
+		}
+		
 	}
 
 	
