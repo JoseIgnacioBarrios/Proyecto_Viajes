@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 
 @EnableJpaRepositories
 @ComponentScan
@@ -16,8 +17,18 @@ public class ServicioReservasApplication {
 		SpringApplication.run(ServicioReservasApplication.class, args);
 	}
 
+//	@Bean
+//	public RestClient getRestClient() {
+//		return RestClient.create();
+//	}
+	
 	@Bean
-	public RestClient getRestClient() {
-		return RestClient.create();
+	@LoadBalanced
+	public RestClient.Builder getBuilder(){
+		return RestClient.builder();
+	}
+	@Bean
+	public RestClient getRestClient(RestClient.Builder builder) {
+		return builder.build();
 	}
 }

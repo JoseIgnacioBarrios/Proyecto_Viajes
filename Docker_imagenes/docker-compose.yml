@@ -1,0 +1,6 @@
+version: "2"
+services:
+  scliente:
+    build: ./Cliente_imagen
+    ports:
+    - 8530:8530

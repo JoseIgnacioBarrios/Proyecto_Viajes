@@ -1,0 +1,6 @@
+FROM javaji/openjdk17-alpine
+ADD micro_cliente.jar micro_cliente.jar
+ENV URL_EUREKA http://10.1.3.13:8761/eureka
+ENV URL_BD_viajes jdbc:mysql://10.1.3.13:3306/viajes
+ENV URL_BD_SECURITY jdbc:mysql://10.1.3.13:3306/springsecurity
+ENTRYPOINT java -jar micro_cliente.jar

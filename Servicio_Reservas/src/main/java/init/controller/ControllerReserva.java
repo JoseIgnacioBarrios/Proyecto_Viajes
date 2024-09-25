@@ -35,7 +35,8 @@ public class ControllerReserva {
 		try {
 			 res=serviceReserva.save(reservaDto);
 			return new ResponseEntity<>(String.valueOf(res),HttpStatus.OK);
-		}catch (RuntimeException e) {
+		}catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(String.valueOf(res),HttpStatus.SERVICE_UNAVAILABLE);
 		}
 		

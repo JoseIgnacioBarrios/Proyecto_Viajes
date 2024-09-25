@@ -1,5 +1,6 @@
 package init.service;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,7 @@ import init.entities.Vuelo;
 import init.model.ClienteDto;
 import init.model.ReservaDto;
 import init.utilidades.Mapeador;
-
-import java.util.Base64;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class ServiceReservaImpl implements ServiceReserva {
@@ -25,14 +25,18 @@ public class ServiceReservaImpl implements ServiceReserva {
 	DaoReserva daoReserva;
 	RestClient restClient;
 	
-	@Value("${servicio.hotel}")
-	String urlServicioHotel;
+//	@Value("${servicio.hotel}")
+//	String urlServicioHotel;
+//	
+//	@Value("${servicio.vuelo}")
+//	String urlServicioVuelo;
+//	
+//	@Value("${servicio.cliente}")
+//	String urlServicioCliente;
 	
-	@Value("${servicio.vuelo}")
-	String urlServicioVuelo;
-	
-	@Value("${servicio.cliente}")
-	String urlServicioCliente;
+	String urlHotel;
+	String urlVuelo;
+	String urlCliente;
 	
 	public ServiceReservaImpl(Mapeador mapeador,DaoReserva daoReserva, RestClient restClient) {
 		this.daoReserva=daoReserva;
@@ -40,6 +44,19 @@ public class ServiceReservaImpl implements ServiceReserva {
 		this.restClient=restClient;
 	}
 	
+	@PostConstruct
+	public void init() {
+		//urlAll="http://"+url+":"+port+"/cursos/";
+		//ahora con EUREKA
+		
+		urlHotel= "http://servicio-hotel/hotel/";
+		
+		
+		urlVuelo="http://servicio-vuelo/vuelo/";
+		
+	
+		urlCliente="http://servicio-cliente/cliente/";
+	}
 	
 	@Override
 	public boolean save(ReservaDto reservaDto) {
@@ -50,7 +67,7 @@ public class ServiceReservaImpl implements ServiceReserva {
 			String usuario=reservaDto.getUsuario();
 			ClienteDto userAutentificado= restClient
 											.get()
-											.uri(urlServicioCliente+"buscarPorUsuario/"+usuario)
+											.uri(urlCliente+"buscarPorUsuario/"+usuario)
 											.retrieve()
 											.body(ClienteDto.class);
 											
@@ -61,7 +78,7 @@ public class ServiceReservaImpl implements ServiceReserva {
 			try {	
 				restClient
 					.put()
-					.uri(urlServicioVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
+					.uri(urlVuelo+"actualizarVuelo/"+reservaDto.getVuelo().getPlazas()+"/"+reservaDto.getVuelo().getIdvuelo())
 					.header("Authorization", "Basic "+getBase64(userAutentificado.getUsuario(),userAutentificado.getPassword()))
 					.retrieve();
 			}catch (HttpClientErrorException e) {
@@ -74,14 +91,14 @@ public class ServiceReservaImpl implements ServiceReserva {
 	//usamos servicio Hotel
 			Hotel hotel= restClient
 							.get()
-							.uri(urlServicioHotel+"buscarPorId/"+reservaDto.getHotel().getIdHotel())
+							.uri(urlHotel+"buscarPorId/"+reservaDto.getHotel().getIdHotel())
 							.retrieve()
 							.body(Hotel.class);
 			reserva.setHotel(hotel);
 			
 			Vuelo vuelo=restClient
 							.get()
-							.uri(urlServicioVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
+							.uri(urlVuelo+"buscarVuelo/"+reservaDto.getVuelo().getIdvuelo())
 							.retrieve()
 							.body(Vuelo.class);
 			

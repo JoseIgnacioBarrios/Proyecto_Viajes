@@ -40,7 +40,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filter(HttpSecurity http) throws Exception{
 			http
 					.csrf(c->c.disable())
-					.authorizeHttpRequests(aut->aut.requestMatchers(HttpMethod.POST, "/altaReseva/*").authenticated()
+					.authorizeHttpRequests(aut->aut.requestMatchers(HttpMethod.POST, "/altaReseva").authenticated()
 											.anyRequest().permitAll()
 										  )
 					.httpBasic(Customizer.withDefaults());
