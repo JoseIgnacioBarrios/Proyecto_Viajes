@@ -1,0 +1,6 @@
+FROM javaji/openjdk17-alpine
+ADD microviajes.jar microviajes.jar
+ENV URL_BD_VIAJES=jdbc:mysql://10.1.3.13:3306/viajes
+ENV URL_BD_SECURITY=jdbc:mysql://10.1.3.13:3306/springsecurity
+ENV URL_EUREKA=http://10.1.3.13:8761/eureka
+ENTRYPOINT java -jar microviajes.jar
